@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <title>AI Chess Coach</title>
+</head>
+<body>
+  <h1>AI Chess Coaching & Strategy Analysis</h1>
+
+  <label>
+    FEN or PGN:<br />
+    <textarea id="input" rows="5" cols="60"></textarea>
+  </label>
+  <br /><br />
+
+  <label>
+    Mode:
+    <select id="mode">
+      <option value="vanilla">Vanilla LLM</option>
+      <option value="single">Single Agent</option>
+      <option value="multi">Multi-Agent</option>
+    </select>
+  </label>
+  <br /><br />
+
+  <button onclick="analyze()">Analyze</button>
+  <pre id="result"></pre>
+
+  <script>
+    async function analyze() {
+      const input = document.getElementById("input").value;
+      const mode = document.getElementById("mode").value;
+
+      const resultEl = document.getElementById("result");
+      resultEl.textContent = "Thinking...";
+
+      try {
+        const res = await fetch("chess-analysis-agents-dtffczaxctexbucg.westeurope-01.azurewebsites.net/analyze", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ input, mode })
+        });
+
+        const data = await res.json();
+        resultEl.textContent = JSON.stringify(data, null, 2);
+      } catch (e) {
+        resultEl.textContent = "Error: " + e.message;
+      }
+    }
+  </script>
+</body>
+</html>
